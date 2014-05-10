@@ -9,6 +9,6 @@ object SimpleApp {
     val logData = sc.textFile(logFile, 2).cache()
     val numAs = logData.filter(_.contains("a")).count()
     val numBs = logData.filter(_.contains("b")).count()
-    println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))
+    println(s"Lines with a: $numAs, Lines with b: $numBs")
   }
 }
