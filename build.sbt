@@ -1,7 +1,7 @@
 //
 // http://spark.apache.org/docs/latest/quick-start.html#a-standalone-app-in-scala
 //
-name := "Spark Activator"
+name := "hello-spark"
 
 version := "1.0"
 
