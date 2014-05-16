@@ -1,7 +1,7 @@
 Apache Spark Activator
 ======================
 
-[![Build Status](https://travis-ci.org/jaceklaskowski/spark-activator.png)](https://travis-ci.org/jaceklaskowski/spark-activator)
+[![Build Status](https://travis-ci.org/jaceklaskowski/spark-activator.svg?branch=master)](https://travis-ci.org/jaceklaskowski/spark-activator)
 
 The motivation: [Go Reactive Activator Contest: Scala Days Edition](http://typesafe.com/blog/go-reactive-activator-contest-scala-days-edition)
 
