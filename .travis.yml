@@ -1,0 +1,14 @@
+language: scala
+scala:
+  - "2.10.4"
+  - "2.11.0"
+jdk:
+  - oraclejdk7
+  - openjdk7
+script:
+  - sbt $TASKS
+env:
+  - TASKS=test
+notifications:
+  email:
+    - jacek@japila.pl
