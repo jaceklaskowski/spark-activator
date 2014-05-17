@@ -1,9 +1,9 @@
-Apache Spark activator template
-===============================
+Spark Streaming with Scala activator template
+=============================================
 
 [![Build Status](https://travis-ci.org/jaceklaskowski/spark-activator.svg?branch=master)](https://travis-ci.org/jaceklaskowski/spark-activator)
 
-This is an [Typesafe Activator](http://typesafe.com/platform/getstarted) template to Demonstrate [Apache Spark](http://spark.apache.org) with Scala and Akka.
+This is an [Typesafe Activator](http://typesafe.com/platform/getstarted) template to demonstrate [Apache Spark](http://spark.apache.org) for data streaming with Scala and Akka using the [Spark Streaming](http://spark.apache.org/docs/latest/streaming-programming-guide.html) extension.
 
 The motivation: [Go Reactive Activator Contest: Scala Days Edition](http://typesafe.com/blog/go-reactive-activator-contest-scala-days-edition)
 
