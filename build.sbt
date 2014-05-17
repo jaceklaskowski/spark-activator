@@ -11,3 +11,8 @@ libraryDependencies ++= Dependencies.sparkHadoop
 releaseSettings
 
 scalariformSettings
+
+initialCommands in console := """
+  |import org.apache.spark._
+  |import org.apache.spark.streaming._
+  |import org.apache.spark.streaming.StreamingContext._""".stripMargin
