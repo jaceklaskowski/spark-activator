@@ -3,12 +3,11 @@
 //
 name := "hello-spark"
 
-version := "1.0"
-
 // 2.11 doesn't seem to work
 scalaVersion := "2.10.4"
 
-libraryDependencies ++= Seq(
-  "org.apache.spark"  %% "spark-core"    % "0.9.1",
-  "org.apache.hadoop"  % "hadoop-client" % "2.4.0"
-)
+libraryDependencies ++= Dependencies.sparkHadoop
+
+releaseSettings
+
+scalariformSettings
