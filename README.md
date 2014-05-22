@@ -9,6 +9,10 @@ This is an [Typesafe Activator](http://typesafe.com/platform/getstarted) templat
 
 The motivation: [Go Reactive Activator Contest: Scala Days Edition](http://typesafe.com/blog/go-reactive-activator-contest-scala-days-edition)
 
+# Run the project
+
+Once you download the activator template, execute `sbt 'runMain StreamingApp'`.
+
 ### Open questions
 * What is Apache Spark Streaming? What are Spark components?
 * What are the use cases for Spark and Scala? Akka?
