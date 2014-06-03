@@ -1,11 +1,11 @@
 import sbt._
 
 object Version {
-  val spark     = "1.0.0-SNAPSHOT"
+  val spark     = "1.0.0"
   val hadoop    = "2.4.0"
   val slf4j     = "1.7.6"
   val logback   = "1.1.1"
-  val scalaTest = "2.1.0"
+  val scalaTest = "2.1.7"
   val mockito   = "1.9.5"
   val akka      = "2.3.3"
 }
