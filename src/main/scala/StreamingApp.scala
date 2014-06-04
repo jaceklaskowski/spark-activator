@@ -6,13 +6,19 @@ import org.apache.spark.storage._
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream._
 import org.apache.spark.streaming.receiver._
+import scala.concurrent.Await
 
 class Helloer extends Actor with ActorHelper {
+  override def preStart() = {
+    println("")
+    println("=== Helloer is starting up ===")
+    println(s"=== path=${context.self.path} ===")
+    println("")
+  }
   def receive = {
-    case s: String => {
+    case s: String =>
       println(s"Received: $s")
       store(s)
-    }
   }
 }
 
@@ -20,17 +26,41 @@ object StreamingApp {
   def main(args: Array[String]) {
     // Configuration for a Spark application.
     // Used to set various Spark parameters as key-value pairs.
+    val driverPort = 7777
+    val driverHost = "localhost"
     val conf = new SparkConf(false) // skip loading external settings
       .setMaster("local[*]") // run locally with enough threads
       .setAppName("Spark Streaming with Scala and Akka") // name in Spark web UI
       .set("spark.logConf", "true")
-    val ssc = new StreamingContext(conf, Seconds(5))
-    val actorStream: ReceiverInputDStream[String] = ssc.actorStream[String](Props[Helloer], "helloer")
-    actorStream.count().map(cnt => "Received " + cnt + " events.").print()
+      .set("spark.driver.port", s"$driverPort")
+      .set("spark.driver.host", s"$driverHost")
+      .set("spark.akka.logLifecycleEvents", "true")
+    val ssc = new StreamingContext(conf, Seconds(1))
+    val actorName = "helloer"
+    val actorStream: ReceiverInputDStream[String] = ssc.actorStream[String](Props[Helloer], actorName)
+    actorStream.print()
 
     ssc.start()
-    ssc.awaitTermination()
-    //    val stopSparkContext, stopGracefully = true
-    //    ssc.stop(stopSparkContext, stopGracefully)
+    Thread.sleep(3 * 1000)
+
+    println("BEFORE getting a handle of the remote helloer")
+    import scala.concurrent.duration._
+    val actorSystem = SparkEnv.get.actorSystem
+    val url = s"akka.tcp://spark@$driverHost:$driverPort/user/Supervisor0/$actorName"
+    val timeout = 100 seconds
+    val helloer = Await.result(actorSystem.actorSelection(url).resolveOne(timeout), timeout)
+    helloer ! "Hello"
+    println("AFTER getting a handle of the remote helloer")
+
+    helloer ! "from"
+    helloer ! "Apache Spark (Streaming)"
+    helloer ! "and"
+    helloer ! "Akka"
+    helloer ! "and"
+    helloer ! "Scala"
+
+    val stopSparkContext = true
+    val stopGracefully = true
+    ssc.stop(stopSparkContext, stopGracefully)
   }
 }

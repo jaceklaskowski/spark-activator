@@ -11,6 +11,7 @@ object Version {
 }
 
 object Library {
+  // workaround until 2.11 version for Spark Streaming's available
   val sparkStreaming = "org.apache.spark"  %% "spark-streaming" % Version.spark
   val akkaActor      = "com.typesafe.akka" %% "akka-actor"      % Version.akka
   val akkaTestKit    = "com.typesafe.akka" %% "akka-testkit"    % Version.akka
