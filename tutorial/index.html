@@ -1,81 +1,72 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-    <title>A starter application with Apache Spark</title>
+    <title>Spark Streaming with Scala and Akka - Activator Template</title>
 </head>
 <body>
 <div>
-    <h2>A starter application with Apache Spark</h2>
+    <h2>Spark Streaming with Scala and Akka</h2>
     <p>
-        <a href="http://spark.apache.org/" target="_blank">Apache Spark</a> is a fast and general engine for large-scale data processing.
+        <a href="http://spark.apache.org/" target="_blank">Apache Spark</a> is a fast and general engine for large-scale data processing. This Typesafe Activator template demonstrates Apache Spark for near-real-time data streaming with Scala and Akka using the <a href="http://spark.apache.org/docs/latest/streaming-programming-guide.html" target="_blank">Spark Streaming</a> extension.
     </p>
     <p>
-        This tutorial illustrates how one can use Apache Spark to...FIXME.
-    </p>
-</div>
-<div>
-    <h2>
-        The Mission
-    </h2>
-    <p>
-        The mission is to use...FIXME.
+        This tutorial illustrates how one can use Apache Spark with the Streaming extension to send messages to an Akka actor that streams the data to Spark Streaming's actor system for further processing.
     </p>
 </div>
 <div>
-    <h2>Define ...</h2>
+    <h2>Develop Spark Streaming application</h2>
     <p>
-        A job is...(you can find the code in the
-    <a href="#code/src/main/scala/HelloSpark.scala" class="shortcut">HelloSpark</a> file).
+        You start developing Spark Streaming application by creating a <a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.SparkConf">SparkConf</a> that's followed by a <a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.streaming.StreamingContext">StreamingContext</a>.
         <pre><code>
-// Scala code
-
-case object X
-case class XX(y: String)
-case class XXX(y: String)
+val conf = new SparkConf(false) // skip loading external settings
+  .setMaster("local[*]") // run locally with enough threads
+  .setAppName("Spark Streaming with Scala and Akka") // name in Spark web UI
+  .set("spark.logConf", "true")
+  .set("spark.driver.port", s"$driverPort")
+  .set("spark.driver.host", s"$driverHost")
+  .set("spark.akka.logLifecycleEvents", "true")
+val ssc = new StreamingContext(conf, Seconds(1))
         </code></pre>
-        You use <code>....(...)</code> to show code snippets and <em>italics</em> to have a test italiciazed.
+        This gives you a context to access the actor system that is of type <a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.streaming.dstream.ReceiverInputDStream">ReceiverInputDStream</a>.
+        <pre><code>
+val actorName = "helloer"
+val actorStream: ReceiverInputDStream[String] = ssc.actorStream[String](Props[Helloer], actorName)
+        </code></pre>
+        Having DStream lets you define a high-level processing pipeline in Spark Streaming.
+        <pre><code>
+actorStream.print()
+        </code></pre>
+        In the above case, <code>print()</code> method is going to print the first ten elements of each RDD generated in this DStream.
+        <br><br>
+        Nothing happens until <code>start()</code> is executed.        
+        <pre><code>
+ssc.start()
+        </code></pre>
+        With the context up and running, the code connects to a Akka remote actor system in Spark Streaming that hosts the <code>helloer</code> actor and sends messages that, as the above code shows, display them all to standard output.
+        <pre><code>
+import scala.concurrent.duration._
+val actorSystem = SparkEnv.get.actorSystem
+val url = s"akka.tcp://spark@$driverHost:$driverPort/user/Supervisor0/$actorName"
+val timeout = 100 seconds
+val helloer = Await.result(actorSystem.actorSelection(url).resolveOne(timeout), timeout)
+helloer ! "Hello"
+helloer ! "from"
+helloer ! "Apache Spark (Streaming)"
+helloer ! "and"
+helloer ! "Akka"
+helloer ! "and"
+helloer ! "Scala"
+        </code></pre>
+        The Scala version is available at <a href="#code/src/main/scala/StreamingApp.scala" class="shortcut">StreamingApp.scala</a>
     </p>
 </div>
 <div>
     <h2>Run the App</h2>
-
     <p>
-        Congratulations!!!
+        Let's run the sample application.
     </p>
     <p>
-        Now you have almost completed the tutorial and written a simple Apache Spark application. If you have not looked at the full sample then now is a good time to do so.
-    <ul>
-        <li>Scala version: <a href="#code/src/main/scala/HelloSpark.scala" class="shortcut">HelloSpark.scala</a></li>
-    </ul>
-    </p>
-    <p>
-        Let's give the sample application a shot.
-    </p>
-    <p>
-        In <a href="#run" class="shortcut">Run</a>, select the application to run from the drop-down list, and select
-        <strong>Start</strong>. Feel free to modify, compile and re-run the sample.
-    </p>
-</div>
-<div>
-    <h2>Run the App</h2>
-
-    <p>
-        Congratulations!!!
-    </p>
-    <p>
-        Now you have almost completed the tutorial and written a simple Akka application. If you have not looked
-        at the full sample then now is a good time to do so.
-    <ul>
-        <li>Java version: <a href="#code/src/main/java/HelloAkkaJava.java" class="shortcut">HelloAkkaJava.java</a></li>
-        <li>Scala version: <a href="#code/src/main/scala/HelloAkkaScala.scala" class="shortcut">HelloAkkaScala.scala</a></li>
-    </ul>
-    </p>
-    <p>
-        Let's have some fun and run it.
-    </p>
-    <p>
-        In <a href="#run" class="shortcut">Run</a>, select the application to run from the drop-down list, and select
-        <strong>Start</strong>. Feel free to modify, compile and re-run the sample.
+        In <a href="#run" class="shortcut">Run</a>, select the application to run from the drop-down list under <strong>Main Class</strong>, and select <strong>Start</strong>. Feel free to modify, compile and re-run the sample.
     </p>
 </div>
 <div>
@@ -83,11 +74,10 @@ case class XXX(y: String)
         Conclusion
     </h2>
     <p>
-        This tutorial has introduced how Apache Spark can be used for...FIXME.
+        This tutorial has introduced <a href="http://spark.apache.org/" target="_blank">Apache Spark</a> with the <a href="http://spark.apache.org/docs/latest/streaming-programming-guide.html" target="_blank">Spark Streaming</a> extension and demonstrated how it can be used for processing near-real-time data streams that are handled by a single actor in a Akka actor system.
 </div>
 <div>
     <h2>Next Steps</h2>
-
     <p>
     The <a href="http://spark.apache.org/documentation.html" target="_blank">Spark Documentation</a> offers Setup instructions, programming guides, and other documentation.
     </p>
