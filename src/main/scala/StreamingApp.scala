@@ -17,7 +17,6 @@ class Helloer extends Actor with ActorHelper {
   }
   def receive = {
     case s: String =>
-      println(s"Received: $s")
       store(s)
   }
 }
@@ -41,17 +40,14 @@ object StreamingApp {
     actorStream.print()
 
     ssc.start()
-    Thread.sleep(3 * 1000)
+    Thread.sleep(3 * 1000) // wish I knew a better way to handle the asynchrony
 
-    println("BEFORE getting a handle of the remote helloer")
     import scala.concurrent.duration._
     val actorSystem = SparkEnv.get.actorSystem
     val url = s"akka.tcp://spark@$driverHost:$driverPort/user/Supervisor0/$actorName"
     val timeout = 100 seconds
     val helloer = Await.result(actorSystem.actorSelection(url).resolveOne(timeout), timeout)
     helloer ! "Hello"
-    println("AFTER getting a handle of the remote helloer")
-
     helloer ! "from"
     helloer ! "Apache Spark (Streaming)"
     helloer ! "and"
