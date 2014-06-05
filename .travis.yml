@@ -1,12 +1,10 @@
 language: scala
 scala:
-  - "2.10.4"
+  - 2.10.4
 jdk:
   - oraclejdk7
 script:
-  - sbt $TASKS
-env:
-  - TASKS='runMain StreamingApp'
+  - sbt ++$TRAVIS_SCALA_VERSION 'runMain StreamingApp'
 notifications:
   email:
     - jacek@japila.pl
