@@ -52,7 +52,7 @@ object StreamingApp {
     val helloer = Await.result(actorSystem.actorSelection(url).resolveOne(timeout), timeout)
     helloer ! "Hello"
     helloer ! "from"
-    helloer ! "Apache Spark (Streaming)"
+    helloer ! "Spark Streaming"
     helloer ! "and"
     helloer ! "Akka"
     helloer ! "and"
