@@ -53,10 +53,10 @@ object StreamingApp {
     helloer ! "Hello"
     helloer ! "from"
     helloer ! "Spark Streaming"
+    helloer ! "with"
+    helloer ! "Scala"
     helloer ! "and"
     helloer ! "Akka"
-    helloer ! "and"
-    helloer ! "Scala"
 
     val stopSparkContext = true
     val stopGracefully = true
