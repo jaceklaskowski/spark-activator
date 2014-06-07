@@ -1,4 +1,4 @@
-import akka.actor.{ Actor, Props }
+import akka.actor.{ Actor, ActorIdentity, Identify, Props }
 import java.util.concurrent.Executors
 import org.apache.spark._
 import org.apache.spark.SparkContext._
@@ -16,8 +16,7 @@ class Helloer extends Actor with ActorHelper {
     println("")
   }
   def receive = {
-    case s: String =>
-      store(s)
+    case s => store(s)
   }
 }
 
@@ -36,9 +35,13 @@ object StreamingApp {
       .set("spark.akka.logLifecycleEvents", "true")
     val ssc = new StreamingContext(conf, Seconds(1))
     val actorName = "helloer"
-    val actorStream: ReceiverInputDStream[String] = ssc.actorStream[String](Props[Helloer], actorName)
-    actorStream.print()
+    val actorStream = ssc.actorStream[String](Props[Helloer], actorName)
 
+    // describe the computation on the input stream as a series of higher-level transformations
+    actorStream.reduce(_ + " " + _).print()
+
+    // start the streaming context so the data can be processed
+    // and the actor gets started
     ssc.start()
     Thread.sleep(3 * 1000) // wish I knew a better way to handle the asynchrony
 
