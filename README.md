@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/jaceklaskowski/spark-activator.png?label=ready&title=Ready)](https://waffle.io/jaceklaskowski/spark-activator)
 Spark Streaming with Scala and Akka activator template
 ======================================================
 
