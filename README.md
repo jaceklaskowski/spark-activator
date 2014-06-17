@@ -1,8 +1,7 @@
-[![Stories in Ready](https://badge.waffle.io/jaceklaskowski/spark-activator.png?label=ready&title=Ready)](https://waffle.io/jaceklaskowski/spark-activator)
 Spark Streaming with Scala and Akka activator template
 ======================================================
 
-[![Build Status](https://travis-ci.org/jaceklaskowski/spark-activator.svg?branch=master)](https://travis-ci.org/jaceklaskowski/spark-activator)
+[![Build Status](https://travis-ci.org/jaceklaskowski/spark-activator.svg?branch=master)](https://travis-ci.org/jaceklaskowski/spark-activator) [![Stories in Ready](https://badge.waffle.io/jaceklaskowski/spark-activator.png?label=ready&title=Ready)](https://waffle.io/jaceklaskowski/spark-activator)
 
 This is an [Typesafe Activator](http://typesafe.com/platform/getstarted) template to demonstrate [Apache Spark](http://spark.apache.org) for near-real-time data streaming with Scala and Akka using the [Spark Streaming](http://spark.apache.org/docs/latest/streaming-programming-guide.html) extension.
 
