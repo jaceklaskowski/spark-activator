@@ -1,25 +1,25 @@
 import sbt._
 
 object Version {
-  val spark     = "1.0.0"
-  val hadoop    = "2.4.0"
+  val akka      = "2.3.8"
+  val hadoop    = "2.6.0"
+  val logback   = "1.1.2"
+  val mockito   = "1.10.17"
+  val scala     = "2.11.4"
+  val scalaTest = "2.2.3"
   val slf4j     = "1.7.6"
-  val logback   = "1.1.1"
-  val scalaTest = "2.1.7"
-  val mockito   = "1.9.5"
-  val akka      = "2.3.3"
+  val spark     = "1.2.0"
 }
 
 object Library {
-  // workaround until 2.11 version for Spark Streaming's available
-  val sparkStreaming = "org.apache.spark"  %% "spark-streaming" % Version.spark
   val akkaActor      = "com.typesafe.akka" %% "akka-actor"      % Version.akka
   val akkaTestKit    = "com.typesafe.akka" %% "akka-testkit"    % Version.akka
   val hadoopClient   = "org.apache.hadoop" %  "hadoop-client"   % Version.hadoop
-  val slf4jApi       = "org.slf4j"         %  "slf4j-api"       % Version.slf4j
   val logbackClassic = "ch.qos.logback"    %  "logback-classic" % Version.logback
-  val scalaTest      = "org.scalatest"     %% "scalatest"       % Version.scalaTest
   val mockitoAll     = "org.mockito"       %  "mockito-all"     % Version.mockito
+  val scalaTest      = "org.scalatest"     %% "scalatest"       % Version.scalaTest
+  val slf4jApi       = "org.slf4j"         %  "slf4j-api"       % Version.slf4j
+  val sparkStreaming = "org.apache.spark"  %% "spark-streaming" % Version.spark
 }
 
 object Dependencies {
@@ -32,7 +32,7 @@ object Dependencies {
     akkaTestKit,
     hadoopClient,
     logbackClassic % "test",
-    scalaTest % "test",
-    mockitoAll % "test"
+    scalaTest      % "test",
+    mockitoAll     % "test"
   )
 }

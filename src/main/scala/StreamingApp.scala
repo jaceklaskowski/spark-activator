@@ -1,3 +1,4 @@
+import akka.actor.Actor.Receive
 import akka.actor.{ Actor, ActorIdentity, Identify, Props }
 import java.util.concurrent.Executors
 import org.apache.spark._
@@ -27,11 +28,11 @@ object StreamingApp {
     val driverPort = 7777
     val driverHost = "localhost"
     val conf = new SparkConf(false) // skip loading external settings
-      .setMaster("local[*]") // run locally with enough threads
+      .setMaster("local[*]") // run locally with as many threads as needed
       .setAppName("Spark Streaming with Scala and Akka") // name in Spark web UI
       .set("spark.logConf", "true")
-      .set("spark.driver.port", s"$driverPort")
-      .set("spark.driver.host", s"$driverHost")
+      .set("spark.driver.port", driverPort.toString)
+      .set("spark.driver.host", driverHost)
       .set("spark.akka.logLifecycleEvents", "true")
     val ssc = new StreamingContext(conf, Seconds(1))
     val actorName = "helloer"
@@ -47,8 +48,9 @@ object StreamingApp {
 
     import scala.concurrent.duration._
     val actorSystem = SparkEnv.get.actorSystem
-    val url = s"akka.tcp://spark@$driverHost:$driverPort/user/Supervisor0/$actorName"
-    val timeout = 100 seconds
+
+    val url = s"akka.tcp://sparkDriver@$driverHost:$driverPort/user/Supervisor0/$actorName"
+    val timeout = 10.seconds
     val helloer = Await.result(actorSystem.actorSelection(url).resolveOne(timeout), timeout)
     helloer ! "Hello"
     helloer ! "from"

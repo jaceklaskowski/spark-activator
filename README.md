@@ -9,4 +9,6 @@ The motivation: [Go Reactive Activator Contest: Scala Days Edition](http://types
 
 # Run the activator project
 
-Once you download the activator template, execute `sbt ';clean;runMain StreamingApp'`. `clean` is important after the first run when some files get serialized and then deserialized that may in turn cause deserialization problems. As a workaround, running `clean` gets rid of the potential issue quickly and easily.
+Once you download the activator template, execute `./activator clean 'runMain StreamingApp'`.
+
+Please note that the `clean` task is important after the first run as some files get serialized and then deserialized that have often caused deserialization problems. As a workaround, running `clean` gets rid of the potential issue quickly and easily.

@@ -1,9 +1,10 @@
 //
 // http://spark.apache.org/docs/latest/quick-start.html#a-standalone-app-in-scala
 //
-name := "spark-streaming-scala-akka-activator"
-
-scalaVersion := "2.10.4"
+name         := "spark-streaming-scala-akka-activator"
+organization := "pl.japila"
+version      := "1.0"
+scalaVersion := Version.scala
 
 libraryDependencies ++= Dependencies.sparkAkkaHadoop
 
