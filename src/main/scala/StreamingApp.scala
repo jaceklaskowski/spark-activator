@@ -51,7 +51,7 @@ object StreamingApp {
 
     val url = s"akka.tcp://sparkDriver@$driverHost:$driverPort/user/Supervisor0/$actorName"
     val timeout = 10.seconds
-    val helloer = Await.result(actorSystem.actorSelection(url).resolveOne(timeout), timeout)
+    val helloer = actorSystem.actorSelection(url)
     helloer ! "Hello"
     helloer ! "from"
     helloer ! "Spark Streaming"
