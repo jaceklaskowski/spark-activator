@@ -24,8 +24,8 @@ object StreamingApp {
     val driverPort = 7777
     val driverHost = "localhost"
     val conf = new SparkConf(false) // skip loading external settings
-      .setMaster("local[*]") // run locally with as many threads as needed
-      .setAppName("Spark Streaming with Scala and Akka") // name in Spark web UI
+      .setMaster("local[*]") // run locally with as many threads as CPUs
+      .setAppName("Spark Streaming with Scala and Akka") // name in web UI
       .set("spark.logConf", "true")
       .set("spark.driver.port", driverPort.toString)
       .set("spark.driver.host", driverHost)
@@ -43,7 +43,9 @@ object StreamingApp {
     // start the streaming context so the data can be processed
     // and the actor gets started
     ssc.start()
-    Thread.sleep(3 * 1000) // FIXME wish I knew a better way to handle the asynchrony
+
+    // FIXME wish I knew a better way to handle the asynchrony
+    java.util.concurrent.TimeUnit.SECONDS.sleep(3)
 
     val actorSystem = SparkEnv.get.actorSystem
 
@@ -57,8 +59,7 @@ object StreamingApp {
     helloer ! "and"
     helloer ! "Akka"
 
-    val stopSparkContext = true
-    val stopGracefully = true
-    ssc.stop(stopSparkContext, stopGracefully)
+    scala.io.StdIn.readLine("Press Enter to stop Spark Streaming context and the application...")
+    ssc.stop(stopSparkContext = true, stopGracefully = true)
   }
 }
