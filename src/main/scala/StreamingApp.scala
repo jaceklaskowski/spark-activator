@@ -3,7 +3,7 @@ import org.apache.spark._
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.receiver._
 
-class Helloer extends Actor with ActorHelper {
+class Helloer extends ActorReceiver {
   override def preStart() = {
     println("")
     println("=== Helloer is starting up ===")
@@ -23,14 +23,15 @@ object StreamingApp {
     // Used to set various Spark parameters as key-value pairs.
     val driverPort = 7777
     val driverHost = "localhost"
-    val conf = new SparkConf(false) // skip loading external settings
+    val conf = new SparkConf()
       .setMaster("local[*]") // run locally with as many threads as CPUs
       .setAppName("Spark Streaming with Scala and Akka") // name in web UI
       .set("spark.logConf", "true")
       .set("spark.driver.port", driverPort.toString)
       .set("spark.driver.host", driverHost)
       .set("spark.akka.logLifecycleEvents", "true")
-    val ssc = new StreamingContext(conf, Seconds(1))
+    val ssc = new StreamingContext(conf, Seconds(10))
+
     val actorName = "helloer"
 
     // This is the integration point (from Spark's side) between Spark Streaming and Akka system
@@ -39,6 +40,16 @@ object StreamingApp {
 
     // describe the computation on the input stream as a series of higher-level transformations
     actorStream.reduce(_ + " " + _).print()
+
+    // Custom receiver
+    import pl.japila.spark.streaming.CustomReceiverInputDStream
+    import org.apache.spark.storage.StorageLevel
+    import org.apache.spark.streaming.dstream.ReceiverInputDStream
+    val input: ReceiverInputDStream[String] = ssc.receiverStream[String](CustomReceiverInputDStream(StorageLevel.NONE))
+    input.print()
+
+    // Data Ingestion from Kafka
+    import org.apache.spark.streaming.kafka._
 
     // start the streaming context so the data can be processed
     // and the actor gets started
@@ -59,7 +70,8 @@ object StreamingApp {
     helloer ! "and"
     helloer ! "Akka"
 
-    scala.io.StdIn.readLine("Press Enter to stop Spark Streaming context and the application...")
+    import java.util.concurrent.TimeUnit.MINUTES
+    ssc.awaitTerminationOrTimeout(timeout = MINUTES.toMillis(1))
     ssc.stop(stopSparkContext = true, stopGracefully = true)
   }
 }

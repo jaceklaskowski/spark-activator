@@ -7,8 +7,7 @@ version      := "1.0"
 scalaVersion := Version.scala
 
 libraryDependencies ++= Dependencies.sparkAkkaHadoop
-
-releaseSettings
+libraryDependencies += "org.apache.spark" %% "spark-streaming-kafka" % "2.0.0-SNAPSHOT"
 
 scalariformSettings
 
@@ -20,3 +19,11 @@ initialCommands in console := """
   |import akka.actor.{ActorSystem, Props}
   |import com.typesafe.config.ConfigFactory
   |""".stripMargin
+
+fork in run := true
+javaOptions in run ++= Seq(
+  "-Dlog4j.debug=true",
+  "-Dlog4j.configuration=log4j.properties")
+outputStrategy := Some(StdoutOutput)
+
+//resolvers += "apache-snapshot" at "https://repository.apache.org/content/repositories/snapshots"
