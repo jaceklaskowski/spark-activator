@@ -9,6 +9,8 @@ scalaVersion := Version.scala
 libraryDependencies ++= Dependencies.sparkAkkaHadoop
 libraryDependencies += "org.apache.spark" %% "spark-streaming-kafka" % "2.0.0-SNAPSHOT"
 
+resolvers += "apache-snapshot" at "https://repository.apache.org/content/repositories/snapshots"
+
 scalariformSettings
 
 initialCommands in console := """
@@ -26,4 +28,3 @@ javaOptions in run ++= Seq(
   "-Dlog4j.configuration=log4j.properties")
 outputStrategy := Some(StdoutOutput)
 
-//resolvers += "apache-snapshot" at "https://repository.apache.org/content/repositories/snapshots"
