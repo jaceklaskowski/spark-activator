@@ -16,9 +16,8 @@ scalariformSettings
 initialCommands in console := """
   |import org.apache.spark._
   |import org.apache.spark.streaming._
-  |import org.apache.spark.streaming.StreamingContext._
-  |import org.apache.spark.streaming.dstream._
-  |import akka.actor.{ActorSystem, Props}
+  |import org.apache.spark.streaming.akka.{ ActorReceiver, AkkaUtils }
+  |import _root_.akka.actor.{ ActorSystem, Actor, Props }
   |import com.typesafe.config.ConfigFactory
   |""".stripMargin
 

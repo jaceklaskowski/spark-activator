@@ -1,7 +1,7 @@
-import akka.actor.{ Actor, Props }
+import _root_.akka.actor.{ Actor, Props }
 import org.apache.spark._
 import org.apache.spark.streaming._
-import org.apache.spark.streaming.receiver._
+import org.apache.spark.streaming.akka.{ ActorReceiver, AkkaUtils }
 
 class Helloer extends ActorReceiver {
   override def preStart() = {
@@ -29,14 +29,13 @@ object StreamingApp {
       .set("spark.logConf", "true")
       .set("spark.driver.port", driverPort.toString)
       .set("spark.driver.host", driverHost)
-      .set("spark.akka.logLifecycleEvents", "true")
     val ssc = new StreamingContext(conf, Seconds(10))
 
     val actorName = "helloer"
 
     // This is the integration point (from Spark's side) between Spark Streaming and Akka system
     // It's expected that the actor we're now instantiating will `store` messages (to close the integration loop)
-    val actorStream = ssc.actorStream[String](Props[Helloer], actorName)
+    val actorStream = AkkaUtils.createStream[String](ssc, Props[Helloer](), actorName)
 
     // describe the computation on the input stream as a series of higher-level transformations
     actorStream.reduce(_ + " " + _).print()
@@ -58,7 +57,8 @@ object StreamingApp {
     // FIXME wish I knew a better way to handle the asynchrony
     java.util.concurrent.TimeUnit.SECONDS.sleep(3)
 
-    val actorSystem = SparkEnv.get.actorSystem
+    import _root_.akka.actor.ActorSystem
+    val actorSystem = ActorSystem("SparkStreamingAkka")
 
     val url = s"akka.tcp://sparkDriver@$driverHost:$driverPort/user/Supervisor0/$actorName"
     val helloer = actorSystem.actorSelection(url)

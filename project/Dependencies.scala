@@ -19,6 +19,7 @@ object Library {
   val scalaTest      = "org.scalatest"     %% "scalatest"       % Version.scalaTest
   val slf4jApi       = "org.slf4j"         %  "slf4j-api"       % Version.slf4j
   val sparkStreaming = "org.apache.spark"  %% "spark-streaming" % Version.spark
+  val sparkStreamingAkka = "org.apache.spark"  %% "spark-streaming-akka" % Version.spark
 }
 
 object Dependencies {
@@ -27,6 +28,7 @@ object Dependencies {
 
   val sparkAkkaHadoop = Seq(
     sparkStreaming,
+    sparkStreamingAkka,
     akkaActor,
     akkaTestKit,
     logbackClassic % "test",
